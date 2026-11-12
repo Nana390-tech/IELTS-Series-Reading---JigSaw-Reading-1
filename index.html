@@ -40,6 +40,17 @@ main{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:22px 18px 40px}
 .label{display:inline-block;color:#fff;background:var(--me);border-radius:999px;padding:3px 14px;font-weight:800;font-size:15px}
 h2{font-family:var(--serif);font-size:32px;margin:8px 0 14px;color:var(--ink)}
 .text p{font-family:var(--serif);font-size:20px;line-height:1.75;margin:0 0 16px;max-width:66ch}
+.hlbar{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.pen{width:38px;height:38px;border-radius:50%;border:3px solid transparent;box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)}
+.pen[aria-pressed="true"]{border-color:var(--ink)}
+.pen.y{background:#FFE58A}.pen.g{background:#BDEBC6}.pen.p{background:#F9C6D8}
+.pen.er{background:#fff;font-size:18px}
+.hlnote{font-size:14px;color:var(--muted);margin:0 0 14px}
+.clearhl{background:none;border:0;color:var(--ink);text-decoration:underline;font-size:14px;padding:0;margin:0 0 14px}
+mark.hl{border-radius:3px;padding:0 1px;color:inherit}
+mark.hl.y{background:#FFE58A}mark.hl.g{background:#BDEBC6}mark.hl.p{background:#F9C6D8}
+body.erase .text mark.hl{cursor:pointer;outline:1px dashed var(--bad)}
+.text{-webkit-user-select:text;user-select:text}
 aside.side{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:16px;position:sticky;top:14px}
 aside h3{margin:0 0 8px;font-size:17px}
 .gl{display:flex;flex-direction:column;gap:6px}
@@ -116,7 +127,7 @@ const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const norm=s=>String(s||"").toLowerCase().replace(/[’']/g,"'").replace(/\s+/g," ").trim();
 const fresh=()=>({ans:{},checked:false,opts:D.mixed.map(q=>q.type==="mc"?shuffle(q.options):null),celebrated:false});
-const S={tab:"A",role:"A",nA:"",nB:"",Q:fresh()};
+const S={tab:"A",role:"A",nA:"",nB:"",Q:fresh(),pen:"y",hl:{A:null,B:null}};
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2600)}
 
 const isRight=(q,v)=>q.type==="short"?q.accept.some(k=>norm(v).includes(norm(k))):v===(q.type==="mc"?q.options[0]:q.a);
@@ -134,10 +145,45 @@ function textTab(r){
     <div class="secret">This is Student ${r}'s text. Student ${o}: please don't read this tab! Your partner will tell you about it.</div>
     <span class="label">Student ${r}</span>
     <h2>${esc(P.part.replace(/^Part [AB]: /,""))}</h2>
-    ${P.text.map(p=>`<p>${esc(p)}</p>`).join("")}
+    <div id="paras">${S.hl[r]||P.text.map(p=>`<p>${esc(p)}</p>`).join("")}</div>
   </article>
-  <aside class="side"><h3>Word help</h3><div class="gl">${GLOSS[r].map(([e,a])=>`<span>${e}<i lang="ar">${a}</i></span>`).join("")}</div>
+  <aside class="side noprint"><h3>Highlighter</h3>
+   <div class="hlbar" role="group" aria-label="Highlighter">${[["y","Yellow"],["g","Green"],["p","Pink"]].map(([k,l])=>`<button class="pen ${k}" data-pen="${k}" aria-pressed="${S.pen===k}" aria-label="${l} highlighter" title="${l}"></button>`).join("")}<button class="pen er" data-pen="er" aria-pressed="${S.pen==="er"}" aria-label="Eraser" title="Eraser: tap a highlight to remove it">⌫</button></div>
+   <p class="hlnote">Choose a colour, then select words in the text. Eraser: tap a highlight to remove it.</p>
+   <button class="clearhl" id="clearhl">Clear all my highlights</button>
+   <h3>Word help</h3><div class="gl">${GLOSS[r].map(([e,a])=>`<span>${e}<i lang="ar">${a}</i></span>`).join("")}</div>
    <button class="btn me next" data-go="Q">I've read it: go to the questions</button></aside></div>`;
+}
+function bindHL(r){
+  const box=$("#paras");if(!box)return;
+  document.body.classList.toggle("erase",S.pen==="er");
+  const save=()=>{S.hl[r]=box.innerHTML};
+  document.querySelectorAll("[data-pen]").forEach(b=>b.onclick=()=>{S.pen=b.dataset.pen;document.querySelectorAll("[data-pen]").forEach(x=>x.setAttribute("aria-pressed",x===b));document.body.classList.toggle("erase",S.pen==="er")});
+  $("#clearhl").onclick=()=>{S.hl[r]=null;box.innerHTML=D[r].text.map(p=>`<p>${esc(p)}</p>`).join("");toast("Highlights cleared.")};
+  const apply=()=>{
+    if(S.pen==="er")return;
+    const sel=window.getSelection();if(!sel||sel.rangeCount===0||sel.isCollapsed)return;
+    const rg=sel.getRangeAt(0);if(!box.contains(rg.commonAncestorContainer))return;
+    const W=/[A-Za-z0-9'’,.-]/;
+    if(rg.startContainer.nodeType===3){let o=rg.startOffset;const t=rg.startContainer.nodeValue;while(o>0&&/[A-Za-z0-9'’]/.test(t[o-1]))o--;rg.setStart(rg.startContainer,o)}
+    if(rg.endContainer.nodeType===3){let o=rg.endOffset;const t=rg.endContainer.nodeValue;while(o<t.length&&/[A-Za-z0-9'’]/.test(t[o]))o++;rg.setEnd(rg.endContainer,o)}
+    const walker=document.createTreeWalker(box,NodeFilter.SHOW_TEXT,{acceptNode:n=>rg.intersectsNode(n)&&n.nodeValue.trim()?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT});
+    const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(n=>{
+      let start=n===rg.startContainer?rg.startOffset:0,end=n===rg.endContainer?rg.endOffset:n.nodeValue.length;
+      if(end<=start)return;
+      let t=n;if(start>0)t=t.splitText(start);if(end-start<t.nodeValue.length)t.splitText(end-start);
+      const par=t.parentNode;
+      if(par.nodeName==="MARK"){par.className="hl "+S.pen;return}
+      const m=document.createElement("mark");m.className="hl "+S.pen;par.replaceChild(m,t);m.appendChild(t);
+    });
+    sel.removeAllRanges();box.normalize();save();
+  };
+  box.addEventListener("mouseup",()=>setTimeout(apply,0));
+  box.addEventListener("touchend",()=>setTimeout(apply,350));
+  box.addEventListener("keyup",e=>{if(e.shiftKey)apply()});
+  box.addEventListener("click",e=>{if(S.pen!=="er")return;const m=e.target.closest("mark.hl");if(!m)return;
+    const p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m);p.normalize();save()});
 }
 function teamBox(){return `<div class="team"><h3>Our team</h3>
     <div class="a"><label for="nA">Student A's name</label><input type="text" id="nA" value="${esc(S.nA)}" autocomplete="off" placeholder="Type a name"></div>
@@ -173,7 +219,7 @@ function resultTab(){
    <div class="row">${pass?`<button class="btn me" id="pr">Print / save certificate as PDF</button>`:""}<button class="btn ghost" id="rs">Start again</button></div></div>`;
 }
 function render(){nav();const A=$("#app");const Q=S.Q;
-  if(S.tab==="A"||S.tab==="B")A.innerHTML=textTab(S.tab);
+  if(S.tab==="A"||S.tab==="B"){A.innerHTML=textTab(S.tab);bindHL(S.tab)}
   if(S.tab==="Q")A.innerHTML=questionsTab();
   if(S.tab==="R")A.innerHTML=resultTab();
   A.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.go;render();window.scrollTo(0,0)});
