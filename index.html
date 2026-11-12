@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Falcons Jigsaw Reading</title>
+<style>
+:root{
+  --ink:#173042; --sand:#EFE2C4; --sand-l:#F8F1E1; --paper:#FFFDF8;
+  --A:#A4552B; --B:#2C7A7B; --muted:#5B6672; --line:#DCCFAE; --good:#1E7A4F; --bad:#B3261E;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --ar:"Segoe UI",Tahoma,"Geeza Pro",sans-serif;
+  --me:var(--A);
+}
+body.B{--me:var(--B)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--sand-l);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+button,select,input{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid #E0A33A;outline-offset:3px}
+header{background:var(--ink);color:var(--sand)}
+.hd{max-width:1100px;margin:0 auto;padding:12px 18px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hd h1{margin:0;font-family:var(--serif);font-size:23px}
+.hd .sp{flex:1}
+.score{background:var(--sand);color:var(--ink);border-radius:999px;padding:3px 14px;font-weight:800;font-size:15px}
+nav.top{max-width:1100px;margin:0 auto;padding:10px 18px 0;display:flex;gap:6px;flex-wrap:wrap}
+nav.top button{border:0;border-radius:12px 12px 0 0;padding:10px 20px;font-weight:800;font-size:17px;background:rgba(239,226,196,.16);color:var(--sand)}
+nav.top button[aria-current="page"]{background:var(--sand-l);color:var(--ink)}
+nav.top button.tA[aria-current="page"]{box-shadow:inset 0 5px 0 var(--A)}
+nav.top button.tB[aria-current="page"]{box-shadow:inset 0 5px 0 var(--B)}
+nav.top button.tQ[aria-current="page"],nav.top button.tR[aria-current="page"]{box-shadow:inset 0 5px 0 #E0A33A}
+nav.top .dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;vertical-align:1px}
+main{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:22px 18px 40px}
+/* text tabs */
+.textwrap{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:26px;align-items:start}
+@media(max-width:860px){.textwrap{grid-template-columns:1fr}}
+.secret{border:3px dashed var(--me);color:var(--me);font-weight:800;border-radius:12px;padding:8px 14px;margin:0 0 16px;font-size:16px;background:var(--paper)}
+.label{display:inline-block;color:#fff;background:var(--me);border-radius:999px;padding:3px 14px;font-weight:800;font-size:15px}
+h2{font-family:var(--serif);font-size:32px;margin:8px 0 14px;color:var(--ink)}
+.text p{font-family:var(--serif);font-size:20px;line-height:1.75;margin:0 0 16px;max-width:66ch}
+aside.side{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:16px;position:sticky;top:14px}
+aside h3{margin:0 0 8px;font-size:17px}
+.gl{display:flex;flex-direction:column;gap:6px}
+.gl span{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:4px;font-size:16px}
+.gl i{font-style:normal;font-family:var(--ar);color:var(--me)}
+.next{margin-top:14px;width:100%}
+/* questions */
+.who{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:18px}
+.seg{display:inline-flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:6px 16px;font-weight:800;font-size:16px}
+.seg button.on.A{background:var(--A);color:#fff}.seg button.on.B{background:var(--B);color:#fff}
+.who input{border:2px solid var(--line);border-radius:10px;padding:6px 10px;font-size:16px;width:200px}
+.sec{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:18px 18px 8px;margin-bottom:18px}
+.sec h3{font-family:var(--serif);font-size:24px;margin:0 0 2px}
+.sec .badge{display:inline-block;border-radius:6px;padding:2px 10px;font-size:13px;font-weight:800;background:var(--ink);color:var(--sand);margin-bottom:6px}
+.inst{color:var(--muted);margin:0 0 12px;font-size:16px}
+.talk{background:var(--ink);color:var(--sand);border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:16px}
+.talk b{color:#fff}
+.sub{font-weight:800;margin:6px 0 8px}
+.q{background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.q.ok{border-color:var(--good)}.q.no{border-color:var(--bad)}
+.q .s{font-weight:600}
+.q .n{display:inline-block;min-width:28px;font-weight:800;color:var(--me)}
+.opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.opts button{border:2px solid var(--line);background:#fff;border-radius:10px;padding:7px 14px;font-weight:700;font-size:16px;text-align:left}
+.opts button.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.opts button.right{border-color:var(--good);background:#E6F4EC;color:var(--good)}
+.opts button.wrong{border-color:var(--bad);background:#FBE9E7;color:var(--bad)}
+.q input[type=text]{width:100%;margin-top:8px;border:2px solid var(--line);border-radius:10px;padding:8px 10px;font-size:17px;background:#fff}
+.fb{margin-top:8px;font-size:16px}
+.fb.ok{color:var(--good)}.fb.no{color:var(--bad)}
+.btn{background:var(--ink);color:var(--sand);border:0;border-radius:12px;padding:11px 20px;font-weight:800;font-size:17px}
+.btn.me{background:var(--me);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0 10px}
+.done{color:var(--good);font-weight:800}
+/* result */
+.result{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:22px}
+.big{font-family:var(--serif);font-size:58px;line-height:1;margin:4px 0 10px}
+.cert{margin:18px 0 0;border:6px double var(--ink);border-radius:10px;padding:22px;background:#fff;position:relative}
+.cert h4{font-family:var(--serif);font-size:26px;margin:0 0 6px}
+.cert .nm{font-family:var(--serif);font-size:28px;border-bottom:2px solid var(--ink);display:inline-block;padding:0 10px;margin:6px 0}
+.cert .seal{position:absolute;right:18px;top:18px;width:88px;height:88px;border-radius:50%;background:var(--sand);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:13px;line-height:1.15}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--sand);padding:12px 18px;border-radius:10px;display:none;z-index:9;font-weight:700}
+.toast.show{display:block}
+footer{text-align:center;color:var(--muted);font-size:14px;padding:16px}
+canvas#cf{position:fixed;inset:0;pointer-events:none;z-index:8}
+@media print{header,footer,.row,.noprint{display:none!important}body{background:#fff}}
+</style>
+</head>
+<body>
+<header>
+ <div class="hd"><h1>Falcons: Speed, Sight and Tradition</h1><span class="sp"></span><span class="score" id="score"></span></div>
+ <nav class="top" id="nav" aria-label="Main tabs"></nav>
+</header>
+<main id="app"></main>
+<footer>Designed by: Nazila Motahari &nbsp;|&nbsp; Higher Colleges of Technology &nbsp;|&nbsp; Jigsaw reading</footer>
+<div class="toast" id="toast" role="status"></div>
+<canvas id="cf"></canvas>
+<script>
+const D={"title": "Falcons: Speed, Sight and Tradition", "A": {"part": "Part A: The amazing falcon", "text": ["Falcons are some of the most amazing birds in the world. There are about 40 kinds of falcon. They live on every continent except Antarctica: in deserts, on coasts, in mountains and even in big cities, where they often make their homes on tall buildings and bridges.", "The most famous falcon is the peregrine, and it is the fastest animal on Earth. When it sees another bird below it, it closes its wings and dives down through the air. This dive is called a stoop. During a stoop, a peregrine can reach more than 320 kilometres per hour, almost three times as fast as a car on the motorway. It hits the other bird with its feet, so hard that the bird usually has no chance.", "Speed is not the falcon's only special skill. Sight is its most important sense. A falcon's eyes are very large for the size of its head, and it can see a small bird moving far below it, even from high in the sky. Falcons hunt in the daytime, and they find their food with their eyes, not their noses.", "Male and female falcons look similar, but there is one big difference: the female is larger and stronger than the male. This is the opposite of many other animals.", "Falcons do not build big nests of sticks like many other birds. Peregrines usually lay their eggs in a high, flat place, such as the edge of a cliff or the roof of a tall building. The mother and father take turns to keep the eggs warm."], "tf": [["There are about 40 kinds of falcon.", "TRUE", ""], ["Falcons live on every continent in the world.", "FALSE", "They live on every continent except Antarctica."], ["A peregrine hits other birds with its beak.", "FALSE", "It hits them with its feet."], ["Peregrines lay their eggs in high places.", "TRUE", ""]], "short": [["What is a peregrine's dive called?", "A stoop", ["stoop"]], ["How fast can a peregrine go in a stoop?", "More than 320 kilometres per hour", ["320"]], ["What is a falcon's most important sense?", "Sight", ["sight", "eye", "see"]], ["Where do falcons often live in big cities?", "On tall buildings and bridges", ["building", "bridge"]]], "ask": [["When did the Abu Dhabi Falcon Hospital open?", "In 1999", ["In 1999", "In 2002", "In 2010", "In 2018"]], ["What do falconers put on a falcon's head?", "A small leather hood, called a burqa", ["A small leather hood, called a burqa", "A gold crown", "A small camera", "A cotton scarf"]], ["What did falcons hunt for Bedouin families in the past?", "Houbara birds and desert hares", ["Houbara birds and desert hares", "Fish from the sea", "Camels and goats", "Snakes and scorpions"]], ["Why did the UAE start giving falcons passports?", "To stop the illegal trade in wild falcons and to let owners travel with their birds", ["To stop the illegal trade in wild falcons and to let owners travel with their birds", "To count how many falcons live in the desert", "To let falcons enter the Falcon Hospital", "To give every falcon a name"]], ["What happened to falconry in 2010?", "It joined UNESCO's list of the world's living heritage", ["It joined UNESCO's list of the world's living heritage", "It became a sport at the Olympic Games", "It stopped in the UAE", "The first falcon passports were given"]]]}, "B": {"part": "Part B: Falcons and the UAE", "text": ["For thousands of years, falcons have been part of life in the Arabian Peninsula. In the past, Bedouin families trained falcons to hunt in the desert. The falcons caught houbara birds and desert hares, and this meat was important food in the winter. Today, falconry is a sport and a proud tradition, and a golden falcon appears on the UAE's national emblem.", "Training a falcon takes a lot of patience. Falconers often cover the bird's head with a small leather hood, called a burqa. When the falcon cannot see, it stays calm and quiet, even in a busy, noisy place. Most falconers prefer to train female falcons.", "Falcons are so important in the UAE that they have their own hospital. The Abu Dhabi Falcon Hospital opened in 1999, and today it treats about 11,000 falcons every year. Doctors there check the birds' feathers, eyes and feet, and the hospital even treats cats and dogs.", "Falcons in the UAE also have their own passports. The UAE started giving passports to falcons in 2002. A passport helps to stop the illegal trade in wild falcons, and it lets owners travel to other countries with their birds. By 2018, more than 28,000 falcons had passports.", "In 2010, falconry joined UNESCO's list of the world's living heritage. The UAE led this project together with other countries, so that people everywhere will remember and protect this tradition."], "tf": [["In the past, Bedouin families used falcons to find water.", "FALSE", "They used falcons to hunt for food."], ["A golden falcon is on the UAE's national emblem.", "TRUE", ""], ["The Falcon Hospital treats only falcons.", "FALSE", "It also treats cats and dogs."], ["More than 28,000 falcons had passports by 2018.", "TRUE", ""]], "short": [["What is a falcon's leather hood called?", "A burqa", ["burqa", "burka", "burqah"]], ["How many falcons does the hospital treat each year?", "About 11,000", ["11,000", "11000", "eleven thousand"]], ["When did the UAE start giving falcons passports?", "In 2002", ["2002"]], ["Which country led the UNESCO project?", "The UAE", ["uae", "emirates"]]], "ask": [["How many kinds of falcon are there?", "About 40", ["About 40", "About 4", "About 400", "About 14"]], ["Which is the fastest animal on Earth?", "The peregrine falcon", ["The peregrine falcon", "The cheetah", "The houbara", "The eagle"]], ["Which is bigger: a male falcon or a female falcon?", "The female", ["The female", "The male", "They are the same size", "It depends on the country"]], ["When do falcons hunt?", "In the daytime", ["In the daytime", "At night", "Only in winter", "Only when it rains"]], ["Where do peregrines lay their eggs?", "In high, flat places, like a cliff edge or a roof", ["In high, flat places, like a cliff edge or a roof", "In big nests of sticks in trees", "In holes in the sand", "Near water"]]]}, "together": [["Why do most falconers prefer to train female falcons?", "Because female falcons are larger and stronger than males.", "B says falconers prefer females; A says why: females are larger and stronger.", ["Because female falcons are larger and stronger than males", "Because female falcons are quieter", "Because female falcons are cheaper", "Because only females can wear a hood"]], ["Why does a hood keep a falcon so calm?", "Because sight is a falcon's most important sense, so when it cannot see, it relaxes.", "B describes the hood; A says sight is the falcon's most important sense.", ["Because sight is its most important sense, so it relaxes when it cannot see", "Because the hood keeps it warm", "Because the hood smells of food", "Because falcons sleep in the daytime"]], ["Why were falcons so good at catching houbara for Bedouin families?", "They can see a small bird from very high in the sky, and a peregrine can dive at more than 320 km/h.", "B says falcons hunted houbara; A explains their eyesight and speed.", ["They have amazing eyesight and can dive at more than 320 km/h", "They follow the smell of the houbara", "They hunt at night when the houbara are asleep", "They wait near water for the houbara to drink"]], ["Which two body parts does a falcon need most to hunt, and does the Falcon Hospital check them?", "Its eyes (to find prey) and its feet (to hit it). Yes, the hospital checks both.", "A explains how falcons use their eyes and feet; B says doctors check feathers, eyes and feet.", ["Its eyes and its feet. Yes, the hospital checks both", "Its nose and its beak. No, the hospital doesn't check them", "Its wings and its beak. Yes, the hospital checks both", "Its ears and its tail. No, the hospital doesn't check them"]]], "sources": [["Abu Dhabi Falcon Hospital (Wikipedia)", "https://en.wikipedia.org/wiki/Abu_Dhabi_Falcon_Hospital"], ["More than 28,000 passports issued to falcons since 2002 (Gulf News)", "https://gulfnews.com/uae/environment/more-than-28000-passports-issued-to-falcons-since-2002-1.1229461"], ["Falconry registered as a live heritage of humanity (Khaleej Times)", "https://www.khaleejtimes.com/uae/falconry-registered-as-a-live-heritage-of-humanity"], ["Peregrine Falcon (The Peregrine Fund)", "https://www.peregrinefund.org/explore-raptors-species/falcons/peregrine-falcon"]]};
+const GLOSS={
+ A:[["continent","قارّة"],["dive","يَنقَضّ"],["stoop","اِنقِضاض"],["motorway","طَريق سَريع"],["sense","حاسّة"],["sight","البَصَر"],["nest","عُشّ"],["cliff","جُرف"],["take turns","يَتَناوَبان"]],
+ B:[["Bedouin","بَدَويّ"],["hare","أرنَب بَرّي"],["emblem","شِعار"],["patience","صَبر"],["hood","بُرقُع (غِطاء الرّأس)"],["falconer","صَقّار"],["illegal trade","تِجارة غَير قانونيّة"],["heritage","تُراث"],["protect","يَحمي"]]
+};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const norm=s=>String(s||"").toLowerCase().replace(/[’']/g,"'").replace(/\s+/g," ").trim();
+const fresh=r=>({tf:{},sh:{},s1:false,ask:{},s2:false,tg:{},s3:false,askOpts:D[r].ask.map(q=>shuffle(q[2])),tgOpts:D.together.map(q=>shuffle(q[3])),celebrated:false});
+const S={tab:"A",role:"A",name:"",R:{A:fresh("A"),B:fresh("B")}};
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2600)}
+
+function marks(r){
+  const P=D[r],R=S.R[r];let a=0,b=0,c=0;
+  if(R.s1){P.tf.forEach((t,i)=>{if(R.tf[i]===t[1])a++});P.short.forEach((q,i)=>{if(q[2].some(k=>norm(R.sh[i]).includes(norm(k))))a++})}
+  if(R.s2)P.ask.forEach((q,i)=>{if(R.ask[i]===q[2][0])b++});
+  if(R.s3)D.together.forEach((q,i)=>{if(R.tg[i]===q[3][0])c++});
+  const t1=P.tf.length+P.short.length,t2=P.ask.length,t3=D.together.length;
+  return{a,b,c,t1,t2,t3,tot:a+b+c,max:t1+t2+t3,all:R.s1&&R.s2&&R.s3};
+}
+function nav(){
+  const T=[["A","tA",`<span class="dot" style="background:var(--A)"></span>Student A`],["B","tB",`<span class="dot" style="background:var(--B)"></span>Student B`],["Q","tQ","Questions"],["R","tR","My result"]];
+  $("#nav").innerHTML=T.map(([k,c,l])=>`<button class="${c}" data-t="${k}" aria-current="${S.tab===k?"page":"false"}">${l}</button>`).join("");
+  $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{const t=b.dataset.t;if(t==="A"||t==="B")S.role=t;S.tab=t;render();window.scrollTo(0,0)});
+  document.body.className=S.role;
+  const m=marks(S.role);$("#score").textContent=`Student ${S.role} · ${m.tot} / ${m.max}`;
+}
+function textTab(r){
+  const P=D[r],o=r==="A"?"B":"A";
+  return `<div class="textwrap"><article class="text">
+    <div class="secret">This is Student ${r}'s text. Student ${o}: please don't read this tab! Your partner will tell you about it.</div>
+    <span class="label">Student ${r}</span>
+    <h2>${esc(P.part.replace(/^Part [AB]: /,""))}</h2>
+    ${P.text.map(p=>`<p>${esc(p)}</p>`).join("")}
+  </article>
+  <aside class="side"><h3>Word help</h3><div class="gl">${GLOSS[r].map(([e,a])=>`<span>${e}<i lang="ar">${a}</i></span>`).join("")}</div>
+   <button class="btn me next" data-go="Q">I've read it: go to my questions</button></aside></div>`;
+}
+function questionsTab(){
+  const r=S.role,P=D[r],R=S.R[r],o=r==="A"?"B":"A";
+  const tfHtml=P.tf.map((t,i)=>{const v=R.tf[i],ok=v===t[1];return `<div class="q ${R.s1?(ok?"ok":"no"):""}"><div class="s"><span class="n">${i+1}</span>${esc(t[0])}</div>
+    <div class="opts">${["TRUE","FALSE"].map(x=>{let c=v===x?"sel":"";if(R.s1)c=x===t[1]?"right":(v===x?"wrong":"");return `<button data-tf="${i}" data-o="${x}" class="${c}" ${R.s1?"disabled":""}>${x}</button>`}).join("")}</div>
+    ${R.s1&&t[2]?`<div class="fb ${ok?"ok":"no"}">${esc(t[2])}</div>`:""}</div>`}).join("");
+  const shHtml=P.short.map((s,i)=>{const v=R.sh[i]||"",ok=s[2].some(k=>norm(v).includes(norm(k)));return `<div class="q ${R.s1?(ok?"ok":"no"):""}"><div class="s"><span class="n">${P.tf.length+i+1}</span>${esc(s[0])}</div>
+    <input type="text" data-sh="${i}" value="${esc(v)}" ${R.s1?"disabled":""} aria-label="${esc(s[0])}">
+    ${R.s1?`<div class="fb ${ok?"ok":"no"}">${ok?"Correct.":"Answer:"} ${esc(s[1])}</div>`:""}</div>`}).join("");
+  const mc=(list,key,opts,checked,ans,fbi)=>list.map((q,i)=>{const v=ans[i],right=key(q),ok=v===right;return `<div class="q ${checked?(ok?"ok":"no"):""}"><div class="s"><span class="n">${i+1}</span>${esc(q[0])}</div>
+    <div class="opts">${opts[i].map(x=>{let c=v===x?"sel":"";if(checked)c=x===right?"right":(v===x?"wrong":"");return `<button data-${fbi}="${i}" data-o="${esc(x)}" class="${c}" ${checked?"disabled":""}>${esc(x)}</button>`}).join("")}</div>
+    ${checked&&fbi==="tg"?`<div class="fb ${ok?"ok":"no"}">${esc(q[2])}</div>`:""}</div>`}).join("");
+  return `<div class="who"><b>I am:</b><div class="seg">${["A","B"].map(x=>`<button class="${x} ${r===x?"on":""}" data-role="${x}">Student ${x}</button>`).join("")}</div>
+    <span style="color:var(--muted);font-size:15px">Answering the questions for Student ${r}'s text.</span></div>
+   <section class="sec"><span class="badge">Section 1 · on your own</span><h3>Questions about your text</h3>
+    <p class="inst">All the answers are in the Student ${r} tab. You can go back and read it again.</p>
+    <p class="sub">A. True or false?</p>${tfHtml}
+    <p class="sub" style="margin-top:14px">B. Write short answers.</p>${shHtml}
+    <div class="row">${R.s1?`<span class="done">Section 1 checked ✓</span>`:`<button class="btn me" id="ck1">Check Section 1</button>`}</div></section>
+   <section class="sec"><span class="badge">Section 2 · ask your partner</span><h3>Questions about your partner's text</h3>
+    <div class="talk">These answers are in the <b>Student ${o}</b> tab, but <b>don't open it!</b> Ask your partner, listen, then choose. Then answer her questions about your text.</div>
+    ${mc(P.ask,q=>q[2][0],R.askOpts,R.s2,R.ask,"ask")}
+    <div class="row">${R.s2?`<span class="done">Section 2 checked ✓</span>`:`<button class="btn me" id="ck2">Check Section 2</button>`}</div></section>
+   <section class="sec"><span class="badge">Section 3 · together</span><h3>Put it all together</h3>
+    <div class="talk">Each question needs information from <b>Student A's text and Student B's text</b>. Talk with your partner first, then choose.</div>
+    ${mc(D.together,q=>q[3][0],R.tgOpts,R.s3,R.tg,"tg")}
+    <div class="row">${R.s3?`<span class="done">Section 3 checked ✓</span> <button class="btn me" data-go="R">See my result</button>`:`<button class="btn me" id="ck3">Check Section 3</button>`}</div></section>`;
+}
+function resultTab(){
+  const r=S.role,m=marks(r),pass=m.all&&m.tot>=Math.ceil(m.max*.8);
+  return `<div class="result"><span class="label">Student ${r}</span>
+   <p class="big">${m.tot} / ${m.max}</p>
+   <p>Section 1: <b>${S.R[r].s1?m.a+" / "+m.t1:"not checked"}</b> · Section 2: <b>${S.R[r].s2?m.b+" / "+m.t2:"not checked"}</b> · Section 3: <b>${S.R[r].s3?m.c+" / "+m.t3:"not checked"}</b></p>
+   <p>${!m.all?"Check all three sections in the Questions tab to finish.":pass?"Excellent! Great reading and great teamwork.":"Good effort! Look at the answers in red and talk about them with your partner."}</p>
+   ${pass?`<div class="noprint"><label for="nm" style="font-weight:700">Your name for the certificate</label><br><input type="text" id="nm" value="${esc(S.name)}" style="border:2px solid var(--line);border-radius:10px;padding:8px 10px;width:min(360px,100%)"></div>
+   <div class="cert"><div class="seal">TEAM<br>READER</div><h4>Certificate of Achievement</h4><div>This certifies that</div><div class="nm" id="cn">${esc(S.name)||"Your name"}</div>
+    <div>read Student ${r}'s text of <i>Falcons: Speed, Sight and Tradition</i>, shared information with her partner, and completed the jigsaw with a score of <b>${m.tot} / ${m.max}</b>.</div>
+    <div style="margin-top:14px;font-family:var(--serif);font-style:italic">Designed by: Nazila Motahari · Higher Colleges of Technology</div></div>`:""}
+   <div class="row">${pass?`<button class="btn me" id="pr">Print / save certificate as PDF</button>`:""}<button class="btn ghost" id="rs">Start again</button></div></div>`;
+}
+function render(){nav();const A=$("#app");const r=S.role,P=D[r],R=S.R[r];
+  if(S.tab==="A"||S.tab==="B")A.innerHTML=textTab(S.tab);
+  if(S.tab==="Q")A.innerHTML=questionsTab();
+  if(S.tab==="R")A.innerHTML=resultTab();
+  A.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.go;render();window.scrollTo(0,0)});
+  A.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>{S.role=b.dataset.role;render()});
+  A.querySelectorAll("[data-tf]").forEach(b=>b.onclick=()=>{R.tf[b.dataset.tf]=b.dataset.o;keep(render)});
+  A.querySelectorAll("[data-sh]").forEach(i=>i.oninput=()=>{R.sh[i.dataset.sh]=i.value});
+  A.querySelectorAll("[data-ask]").forEach(b=>b.onclick=()=>{R.ask[b.dataset.ask]=b.dataset.o;keep(render)});
+  A.querySelectorAll("[data-tg]").forEach(b=>b.onclick=()=>{R.tg[b.dataset.tg]=b.dataset.o;keep(render)});
+  const ck=(id,fn)=>{const e=$("#"+id);if(e)e.onclick=fn};
+  ck("ck1",()=>{const miss=P.tf.length-Object.keys(R.tf).length+P.short.filter((s,i)=>!norm(R.sh[i])).length;if(miss){toast(`Answer all of Section 1 first (${miss} left).`);return}R.s1=true;keep(render)});
+  ck("ck2",()=>{const miss=P.ask.length-Object.keys(R.ask).length;if(miss){toast(`Ask your partner about the last ${miss} question${miss>1?"s":""}.`);return}R.s2=true;keep(render)});
+  ck("ck3",()=>{const miss=D.together.length-Object.keys(R.tg).length;if(miss){toast(`Answer all of Section 3 first (${miss} left).`);return}R.s3=true;keep(render)});
+  ck("pr",()=>window.print());
+  ck("rs",()=>{const b=$("#rs");if(b.dataset.sure){S.R[r]=fresh(r);S.tab=r;render();return}b.dataset.sure="1";b.textContent="Tap again to clear Student "+r+"'s answers"});
+  const nm=$("#nm");if(nm)nm.oninput=()=>{S.name=nm.value;$("#cn").textContent=S.name||"Your name"};
+  if(S.tab==="R"){const m=marks(r);if(m.all&&m.tot>=Math.ceil(m.max*.8)&&!R.celebrated){R.celebrated=true;confetti()}}
+}
+function keep(fn){const y=window.scrollY;fn();window.scrollTo(0,y)}
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const c=$("#cf"),x=c.getContext&&c.getContext("2d");if(!x)return;c.width=innerWidth;c.height=innerHeight;
+  const cols=["#A4552B","#EFE2C4","#2C7A7B","#FFFDF8","#E0A33A"];
+  const P=Array.from({length:130},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vy:2+Math.random()*3,vx:-1+Math.random()*2,r:Math.random()*6,vr:-.1+Math.random()*.2,c:cols[Math.floor(Math.random()*cols.length)]}));
+  let t=0;(function f(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.strokeStyle="#173042";x.fillRect(-8,-4.5,16,9);x.strokeRect(-8,-4.5,16,9);x.restore()});if(++t<240)requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})();
+}
+render();
+</script>
+</body>
+</html>
